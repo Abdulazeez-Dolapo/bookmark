@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Book {
+  id    String      @id
+  title   String   @db.VarChar(255)
+  author    String   @db.VarChar(255)
+  notes    String?   @db.VarChar(255)
+  startedReadingAt    DateTime?    @db.Timestamp(6)
+  finishedReadingAt    DateTime?    @db.Timestamp(6)
+
+  categories  BookCategory[]
+  bookmarks   Bookmark[]
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+}
+
+model Category {
+  id    String      @id
+  name   String   @unique @db.VarChar(255)
+
+  books   BookCategory[]
+  
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+}
+
+model BookCategory {
+  id        Int      @id @default(autoincrement())
+  bookId  String
+  categoryId  String
+
+  book        Book        @relation(fields: [bookId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([bookId, categoryId])
+}
+
+model Bookmark {
+  id         Int        @id @default(autoincrement())
+  bookId    String
+  page    Int
+  notes   String?   @db.VarChar(255)
+
+  book    Book  @relation(fields: [bookId], references: [id])
+
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime    @updatedAt
+}
