@@ -5,3 +5,7 @@ export interface ErrorType extends Error {
 	syscall?: string | undefined;
 	status?: number | undefined;
 }
+
+export interface CreateCategoryBody {
+	name: string;
+}
